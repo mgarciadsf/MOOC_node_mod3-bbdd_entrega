@@ -6,6 +6,7 @@ const sequelize = new Sequelize("sqlite:db.sqlite", options);
 
 class User extends Model {}
 class Quiz extends Model {}
+class Score extends Model {}
 
 User.init(
   { name: {
@@ -39,7 +40,19 @@ Quiz.init(
   { sequelize }
 );
 
-
+Score.init(
+   {win: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        isInt: true,
+        min: { args:   [0], msg: "Score: less than 0"}
+      }
+    }
+  },
+{ sequelize }
+);
+  
 Quiz.belongsTo(User, {
   as: 'author', 
   foreignKey: 'authorId', 
@@ -48,6 +61,17 @@ Quiz.belongsTo(User, {
 User.hasMany(Quiz, {
   as: 'posts', 
   foreignKey: 'authorId'
+});
+
+Score.belongsTo(User, {
+	as:'jugador',
+	foreignKey: 'jugadorId',
+	onDelete: 'CASCADE'
+});
+
+User.hasMany(Score, {
+	as:'scores',
+	foreignKey: 'jugadorId'
 });
 
 // N:N relations default is -> onDelete: 'cascade'
@@ -64,5 +88,5 @@ Quiz.belongsToMany(User, {
   through: 'Favourites'
 });
 
-module.exports = sequelize;
 
+module.exports = sequelize;

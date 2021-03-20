@@ -1,5 +1,5 @@
 
-const {User, Quiz} = require("./model.js").models;
+const {User, Quiz, Score} = require("./model.js").models;
 
 // Show all quizzes in DB including <id> and <author>
 exports.list = async (rl) =>  {
@@ -81,5 +81,51 @@ exports.delete = async (rl) => {
   
   if (n===0) throw new Error(`  ${id} not in DB`);
   rl.log(`  ${id} deleted from DB`);
+}
+
+//Play quiz aleatorio
+exports.play = async (rl) => {
+
+let name = await rl.questionP("Enter name: ");
+let user = await User.findOne({where:{ name: name}});
+
+//if (!user) {
+
+//await User.create(
+  //    { name,
+//	 age:0
+  //    }
+   // );
+
+//}
+
+let count = await Quiz.count();
+let n=0;
+let score = 0;
+ for(n;n<count;n++){
+	let idRandom  = Math.floor((Math.random()*count)+1);
+	let quiz = await Quiz.findByPk(Number (idRandom));
+	let answered = await(rl.questionP(quiz.question));
+	if (answered.toLowerCase().trim()===quiz.answer.toLowerCase().trim()) {
+		 rl.log(`  The answer "${answered}" is right!`);
+		score++;
+	}else{
+  		rl.log(`  The answer "${answered}" is wrong!`);
+		n=count;
+		}
+	}
+rl.log(`Score: ${score}`);
+
+if (!user){
+await User.create(
+      { name,
+	edad:0,
+	scores: [{score}]
+      },
+	{include: [{model: Score}]}
+    );
+
+}
+
 }
 

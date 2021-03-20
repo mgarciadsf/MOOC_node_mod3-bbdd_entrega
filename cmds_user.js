@@ -17,10 +17,13 @@ exports.help = (rl) =>
     > tq | qt | t    ## quiz: test (play)
     > uq | qu        ## quiz: update
     > dq | qd        ## quiz: delete
+    > p              ## quiz: play
     >
     > lf | fl | f    ## favourites: list all
     > cf | fc        ## favourite: create
     > df | fd        ## favourite: delete
+    >
+    > ls | sl | s    ## scores: list all
     >
     > e              ## exit & return to shell`
   )
